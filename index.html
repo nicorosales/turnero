@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnero Digital</title>
+  <style>
+    /* RESET & BASE STYLES */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      background-color: #1a1a1a;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* CONTENEDOR PRINCIPAL - ASPECTO DE PANTALLA */
+    .screen-container {
+      width: 100vw;
+      height: 100vh;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    /* 1. ENCABEZADO */
+    header {
+      background-color: #005b66;
+      color: #ffffff;
+      text-align: center;
+      padding: 15px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* 2. CONTENIDO PRINCIPAL (TABLA Y VIDEO) */
+    .main-content {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+      overflow: hidden;
+    }
+
+    /* SECCIÓN IZQUIERDA: TABLA DE TURNOS */
+    .turns-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .turns-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .turns-table th {
+      font-size: 1.8rem;
+      padding: 10px;
+      text-align: center;
+      border-bottom: 2px dashed #bbb;
+      color: #111;
+    }
+
+    .turns-table td {
+      font-size: 2.2rem;
+      font-weight: bold;
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 2px dashed #bbb;
+    }
+
+    .col-box {
+      color: #0d2e46;
+      width: 40%;
+    }
+
+    .col-ticket {
+      color: #bfa122; /* Color dorado similar a la imagen */
+      width: 60%;
+    }
+
+    /* EFECTO DE RESALTADO AL LLAMAR */
+    @keyframes highlight {
+      0% { background-color: #ffe066; }
+      50% { background-color: #ffffff; }
+      100% { background-color: #ffe066; }
+    }
+
+    .row-calling {
+      animation: highlight 1s infinite;
+      border-radius: 8px;
+    }
+
+    /* SECCIÓN DERECHA: MULTIMEDIA */
+    .media-section {
+      flex: 1.2;
+      background-color: #000;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .media-section video, .media-section iframe {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* 3. BARRA INFERIOR (RELOJ Y ANUNCIO) */
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .datetime-bar {
+      padding: 10px 30px;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #111;
+      text-align: right;
+    }
+
+    .announcement-bar {
+      background-color: #005b66;
+      color: #ffffff;
+      padding: 8px 0;
+      font-size: 1.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .announcement-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 25s linear infinite;
+    }
+
+    @keyframes marquee {
+      0%   { transform: translate(0, 0); }
+      100% { transform: translate(-100%, 0); }
+    }
+
+    /* CONTROLES DE PRUEBA (Flotantes para simular llamados) */
+    .admin-panel {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      z-index: 1000;
+      opacity: 0.2;
+      transition: opacity 0.3s;
+    }
+    .admin-panel:hover {
+      opacity: 1;
+    }
+    .admin-panel input, .admin-panel button {
+      padding: 5px;
+      margin: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="screen-container">
+    <!-- Encabezado -->
+    <header>
+      <h1>Turnero Digital</h1>
+    </header>
+
+    <!-- Contenido Central -->
+    <div class="main-content">
+      <!-- Tabla de llamado -->
+      <div class="turns-section">
+        <table class="turns-table">
+          <thead>
+            <tr>
+              <th>Box</th>
+              <th>Ticket / Auxiliar</th>
+            </tr>
+          </thead>
+          <tbody id="turns-body">
+            <tr><td class="col-box">01</td><td class="col-ticket" id="box-1">1000</td></tr>
+            <tr><td class="col-box">02</td><td class="col-ticket" id="box-2">2014</td></tr>
+            <tr><td class="col-box">03</td><td class="col-ticket" id="box-3">3002</td></tr>
+            <tr><td class="col-box">04</td><td class="col-ticket" id="box-4">4601</td></tr>
+            <tr><td class="col-box">05</td><td class="col-ticket" id="box-5">5312</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Espacio Multimedia / Video -->
+      <div class="media-section">
+        <!-- Reemplaza la URL del video o usa una imagen corporativa -->
+        <video autoplay loop muted poster="https://via.placeholder.com/800x450?text=Reproduciendo+Video">
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+          Tu navegador no soporta video HTML5.
+        </video>
+      </div>
+    </div>
+
+    <!-- Pie de página con Hora y Anuncio -->
+    <div class="footer-section">
+      <div class="datetime-bar" id="datetime">
+        00:00 - Cargando fecha...
+      </div>
+      <div class="announcement-bar">
+        <div class="announcement-text">
+          ANNOUNCEMENT: Bienvenido a nuestro sistema de atención. Por favor aguarde a ser llamado en pantalla.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de Control para realizar pruebas de llamados -->
+  <div class="admin-panel">
+    <strong>Panel de Simulación</strong><br>
+    <label>Box (1-5):</label>
+    <input type="number" id="input-box" min="1" max="5" value="1" style="width: 50px;">
+    <label>Ticket/Auxiliar:</label>
+    <input type="text" id="input-ticket" value="A-102" style="width: 70px;">
+    <button onclick="llamarTurno()">Llamar</button>
+  </div>
+
+  <script>
+    // 1. ACTUALIZAR RELOJ Y FECHA EN TIEMPO REAL
+    function updateDateTime() {
+      const now = new Date();
+      
+      // Formato de hora (HH:MM)
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeString = `${hours}:${minutes}`;
+
+      // Formato de fecha (ej: Martes 11 de Abril)
+      const options = { weekday: 'long', day: 'numeric', month: 'long' };
+      let dateString = now.toLocaleDateString('es-ES', options);
+      
+      // Capitalizar día y mes
+      dateString = dateString.replace(/^\w/, (c) => c.toUpperCase());
+
+      document.getElementById('datetime').innerText = `${timeString} - ${dateString}`;
+    }
+
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // 2. REPRODUCIR SONIDO DE TIMBRE (DING-DONG)
+    function playChime() {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      const playTone = (freq, duration, delay) => {
+        setTimeout(() => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        }, delay);
+      };
+
+      playTone(659.25, 0.8, 0);    // Tono E5
+      playTone(523.25, 1.2, 400);  // Tono C5
+    }
+
+    // 3. FUNCIÓN PARA LLAMAR UN TURNO / AUXILIAR
+    function llamarTurno() {
+      const boxNum = document.getElementById('input-box').value;
+      const ticketVal = document.getElementById('input-ticket').value;
+
+      const targetCell = document.getElementById(`box-${boxNum}`);
+      if (targetCell) {
+        // Actualizar el valor del ticket o código de auxiliar
+        targetCell.innerText = ticketVal;
+        
+        // Efecto visual de parpadeo en la fila correspondiente
+        const parentRow = targetCell.parentElement;
+        parentRow.classList.add('row-calling');
+        
+        // Reproducir sonido de aviso
+        playChime();
+
+        // Quitar el parpadeo después de 4 segundos
+        setTimeout(() => {
+          parentRow.classList.remove('row-calling');
+        }, 4000);
+      }
+    }
+  </script>
+</body>
+</html>
